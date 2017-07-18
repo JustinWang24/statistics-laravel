@@ -19,7 +19,7 @@ return [
 
     /**
      * The key to retrieve login user data from session
-     * 用来提取当前登陆用户的 session key
+     * 用来提取当前登陆用户的ID的 session key: 如果是数组形式保存, 则使用 user_data.user_id ....
      */
     'login_user_data_session_key'=>'user_data',
 
