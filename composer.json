@@ -3,7 +3,6 @@
     "description": "Visitor's behavior statistics by using machine auto learning",
     "type": "project",
     "license": "MIT",
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Justin Wang",
