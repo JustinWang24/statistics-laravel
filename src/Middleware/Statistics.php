@@ -55,8 +55,8 @@ class Statistics
         $this->uuidInCookie = $request->cookie(config('statistics.cookie_identifier_name'));
 
         // Determine if this one need to be recorded
-        if($this->getAgentDetector()->robot()){
-            // Ignored if a robot
+        if($this->getAgentDetector()->robot() || $request->ajax()){
+            // Ignored if a robot or ajax request
             return $next($request);
         }
 
@@ -104,6 +104,8 @@ class Statistics
             $response->headers->setCookie($cookie);
             $response->headers->setCookie($cookieNeedScreenSize);
             $this->viewLoader->insertPushScreenSizeJs($response);
+        }else{
+            $this->viewLoader->insertUtilitiesJs($response);
         }
 
         return $response;

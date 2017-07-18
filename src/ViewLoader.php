@@ -30,6 +30,11 @@ class ViewLoader
         $this->app = $app;
     }
 
+    /**
+     * Insert the get screen size js code into response
+     * @param Response $response
+     * @return Response
+     */
     public function insertPushScreenSizeJs(Response $response){
         $content = $response->getContent();
         /**
@@ -39,6 +44,26 @@ class ViewLoader
             $str = file_get_contents(base_path('resources/views/vendor/statistics-laravel/nf_push_screen_size.js'));
         }else{
             $str = file_get_contents(__DIR__.'/views/nf_statistics/nf_push_screen_size.js');
+        }
+
+        $response->setContent(str_replace('</body>','</body>'.$str,$content));
+        return $response;
+    }
+
+    /**
+     * Insert the utilities js content into response
+     * @param Response $response
+     * @return Response
+     */
+    public function insertUtilitiesJs(Response $response){
+        $content = $response->getContent();
+        /**
+         * Check if the js file had been published. If yes, load the published js file.
+         */
+        if(file_exists(base_path('resources/views/vendor/statistics-laravel/nf_utilities.js'))){
+            $str = file_get_contents(base_path('resources/views/vendor/statistics-laravel/nf_utilities.js'));
+        }else{
+            $str = file_get_contents(__DIR__.'/views/nf_statistics/nf_utilities.js');
         }
 
         $response->setContent(str_replace('</body>','</body>'.$str,$content));

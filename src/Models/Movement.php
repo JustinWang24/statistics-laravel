@@ -42,15 +42,13 @@ class Movement extends LaravelEloquentModel
 
     /**
      * Get by uuid in Cookie
-     * @param string $uuidInCookie
+     * @param string $visitorId
      * @return Visitor
      */
-    public static function GetByUuid($uuidInCookie){
-        if($uuidInCookie){
-            // 由于保存的 uuid 实际是 uuid + ___ + 真实 id, 所以取出真实ID 的值才能查找的更快
-            $temp = explode('___',$uuidInCookie);
-            if(count($temp) === 2)
-                return self::find($temp[1]);
+    public static function GetLastByVisitorId($visitorId){
+        if($visitorId){
+            // Get the latest one according to the visitor ID
+            return self::where('visitor_id',$visitorId)->latest()->first();
         }
         return false;
     }
