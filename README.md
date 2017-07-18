@@ -2,7 +2,7 @@
 
 ## Installation
 ```shell
-composer require newflit/laravel-statistics
+composer require newflit/statistics-laravel
 ```
 
 ## Register `ServiceProvider`
