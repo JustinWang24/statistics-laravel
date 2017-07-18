@@ -1,0 +1,23 @@
+{
+    "name": "newflit/statistics-laravel",
+    "description": "Visitor's behavior statistics by using machine auto learning",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Justin Wang",
+            "email": "justinwang24@yahoo.com.au"
+        }
+    ],
+    "require": {
+        "jenssegers/agent": "^2.5",
+        "nesbot/carbon": "~1.21",
+        "ramsey/uuid": "^3.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Newflit\\Statistics\\": "src/"
+        }
+    }
+}
