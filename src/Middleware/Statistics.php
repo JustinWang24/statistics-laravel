@@ -4,6 +4,7 @@ namespace Newflit\Statistics\Middleware;
 use Carbon\Carbon;
 use Closure;
 use Log;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request as LaravelRequest;
 use Cookie;
 use Auth;
@@ -11,9 +12,14 @@ use Jenssegers\Agent\Agent;
 use Ramsey\Uuid\Uuid;
 use Newflit\Statistics\Models\Visitor;
 use Newflit\Statistics\Models\Movement;
+use Newflit\Statistics\ViewLoader;
 
 class Statistics
 {
+    protected $container;
+
+    protected $viewLoader;
+
     protected $loginUserId = 0;           // The current login user ID
 
     protected $userAgentDataArray = null; // User Agent Data
@@ -25,6 +31,18 @@ class Statistics
     private $isFirstTime = true;          // If first time coming.  表示是否第一次访问
 
     /**
+     * Create a new middleware instance.
+     *
+     * @param  Container $container
+     * @param  ViewLoader $viewLoader
+     */
+    public function __construct(Container $container, ViewLoader $viewLoader)
+    {
+        $this->container = $container;
+        $this->viewLoader = $viewLoader;
+    }
+
+    /**
      * Handle an incoming request.
      *
      * @param  LaravelRequest  $request
@@ -34,7 +52,7 @@ class Statistics
     public function handle(LaravelRequest $request, Closure $next)
     {
         // todo: 从 cookie 中取 uuid
-        $this->uuidInCookie = $request->cookie('uuid');
+        $this->uuidInCookie = $request->cookie(config('statistics.cookie_identifier_name'));
 
         // Determine if this one need to be recorded
         if($this->getAgentDetector()->robot()){
@@ -67,7 +85,25 @@ class Statistics
         if($this->isFirstTime){
             // 通过 Cookie 保存到客户端
             $cookie = Cookie::forever('uuid', $this->uuidInCookie);
+
+            /*
+             * At first time, send a cookie to let user tell the server its screen size
+             * 第一次访问的时候, 设置一个 cookie. 指示要发送用户的屏幕尺寸到服务器端.
+             * 默认 Laravel 的 cookie 在浏览器端是取不到的. 下面的方法, 设置 cookie, 以便可以被取到
+             */
+            $cookieNeedScreenSize = Cookie::make(
+                'nf_need_screen_size',
+                1,
+                10,
+                config('path.path'),
+                config('session.domain'),
+                config('session.secure'),
+                false
+            );
+
             $response->headers->setCookie($cookie);
+            $response->headers->setCookie($cookieNeedScreenSize);
+            $this->viewLoader->insertPushScreenSizeJs($response);
         }
 
         return $response;

@@ -9,6 +9,8 @@ return [
             ]
         ]
     ],
+    'cookie_identifier_name'=>'uuid',
+
     /**
      * Use Laravel Auth to retrieve the login user data.
      * If not, please give the session key.

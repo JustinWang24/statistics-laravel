@@ -9,6 +9,7 @@
 namespace Newflit\Statistics;
 
 use Illuminate\Support\ServiceProvider as LaravelProvider;
+use Newflit\Statistics\ViewLoader as NewflitStatisticsViewLoader;
 
 class ServiceProvider extends LaravelProvider
 {
@@ -18,7 +19,11 @@ class ServiceProvider extends LaravelProvider
      * @return void
      */
     public function register(){
-
+        $this->app->singleton('viewLoader', function ($app) {
+                $viewLoader = new NewflitStatisticsViewLoader($app);
+                return $viewLoader;
+            }
+        );
     }
 
     /**
@@ -34,5 +39,14 @@ class ServiceProvider extends LaravelProvider
 
         // Run migration
         $this->loadMigrationsFrom(__DIR__.'/migrations');
+
+        // Publish routes
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+
+        // Publish Views
+        $this->loadViewsFrom(__DIR__.'/views/nf_statistics', 'statistics-laravel');
+        $this->publishes([
+            __DIR__.'/views/nf_statistics' => resource_path('views/vendor/statistics-laravel'),
+        ]);
     }
 }
