@@ -31,6 +31,8 @@ php artisan migrate
 php artisan vendor:publish
 ```
 
+### Before Use, step 3: Please make sure import jQuery in the header in any page you want track.
+
 ## License
 
 MIT
